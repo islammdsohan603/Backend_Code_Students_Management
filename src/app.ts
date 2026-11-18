@@ -7,7 +7,7 @@ app.use(express.json());
 app.get("/", async (req: Request, res: Response) => {
   return res.status(200).json({
     success: true,
-    message: "Students Management Server Running",
+    message: "Student Management System Server Running Now",
   });
 });
 
