@@ -6,3 +6,13 @@ export interface IStudents {
   department: string;
   marks: number;
 }
+
+export interface IUpdateStudent {
+  full_name?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+  age?: number;
+  department?: string;
+  marks?: number;
+}

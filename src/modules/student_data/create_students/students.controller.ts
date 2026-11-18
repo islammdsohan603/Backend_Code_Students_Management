@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { IUpdateStudent } from "./students.interface.js";
 import { studentsService } from "./students.service.js";
 
 const createStudent = async (req: Request, res: Response) => {
@@ -67,8 +68,40 @@ const singleStudentsData = async (
   }
 };
 
+const updateStudentData = async (
+  req: Request<{ id: string }, {}, IUpdateStudent>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+
+    const updatedData = await studentsService.updateStudentData(id, req.body);
+
+    if (!updatedData) {
+      return res.status(404).json({
+        success: false,
+        message: "Student Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Student Data Updated Successfully!",
+      data: updatedData,
+    });
+  } catch (error) {
+    console.error("Update Student Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const students_controller = {
   createStudent,
   getAllStudents,
   singleStudentsData,
+  updateStudentData,
 };

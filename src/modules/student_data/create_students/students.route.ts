@@ -9,4 +9,6 @@ router.get("/", students_controller.getAllStudents);
 
 router.get("/:id", students_controller.singleStudentsData);
 
+router.put("/:id", students_controller.updateStudentData);
+
 export const studentsRouter = router;
