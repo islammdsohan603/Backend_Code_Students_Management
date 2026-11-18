@@ -1,14 +1,16 @@
-import app from "./app";
-import config from "./config/dbconnect";
-const serverRun = async () => {
+import app from "./app.js";
+import { config } from "./config/dbconnect.js";
+import { Database } from "./db/db.js";
+const server = async () => {
     try {
+        await Database();
         app.listen(config.port, () => {
-            console.log(`Server is Running on PORT ${config.port}`);
+            console.log(`Student Management System Server is ${config.port}`);
         });
     }
     catch (error) {
-        console.error("Server Startup Failed:", error);
+        console.log("Server Error", error);
     }
 };
-serverRun();
+server();
 //# sourceMappingURL=server.js.map

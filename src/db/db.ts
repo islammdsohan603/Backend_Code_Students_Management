@@ -15,13 +15,18 @@ export const Database = async () => {
         password VARCHAR(255) NOT NULL,
         age INT NOT NULL,
         department VARCHAR(100) NOT NULL,
+        marks DECIMAL(5,2) NOT NULL,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
-    `
-  
+    `);
 
-  );
+    await pool.query(`
+
+      ALTER TABLE student_data
+ADD COLUMN IF NOT EXISTS marks DECIMAL(5,2) NOT NULL DEFAULT 0;
+      
+      `);
 
     console.log("Database Table Created Successfully!");
   } catch (error) {
