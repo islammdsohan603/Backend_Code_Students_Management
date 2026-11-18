@@ -7,4 +7,6 @@ router.post("/", students_controller.createStudent);
 
 router.get("/", students_controller.getAllStudents);
 
+router.get("/:id", students_controller.singleStudentsData);
+
 export const studentsRouter = router;

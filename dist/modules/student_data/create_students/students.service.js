@@ -66,8 +66,28 @@ const getStudents = async (palyoad) => {
     `);
     return studentsData.rows;
 };
+// get single students data
+const singleStudentsData = async (id) => {
+    const studentdData = await pool.query(`
+    
+    SELECT 
+    
+    id,
+    name,
+    email,
+    age,
+    department,
+    marks
+
+    FROM student_data
+    WHERE id =$1
+
+    `, [id]);
+    return studentdData.rows[0];
+};
 export const studentsService = {
     createStudentData,
     getStudents,
+    singleStudentsData,
 };
 //# sourceMappingURL=students.service.js.map

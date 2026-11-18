@@ -34,7 +34,41 @@ const getAllStudents = async (req: Request, res: Response) => {
   }
 };
 
+// Get Single Student Data
+
+const singleStudentsData = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+
+    const studentData = await studentsService.singleStudentsData(id);
+
+    if (!studentData) {
+      return res.status(404).json({
+        success: false,
+        message: "Student Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Single Student Data Retrieved Successfully!",
+      data: studentData,
+    });
+  } catch (error) {
+    console.error("Get Single Student Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const students_controller = {
   createStudent,
   getAllStudents,
+  singleStudentsData,
 };
