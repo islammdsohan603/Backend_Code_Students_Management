@@ -21,7 +21,7 @@ export const Database = async () => {
         await pool.query(`
 
       ALTER TABLE student_data
-ADD COLUMN IF NOT EXISTS marks DECIMAL(5,2) NOT NULL DEFAULT 0;
+      ADD COLUMN IF NOT EXISTS marks DECIMAL(5,2) NOT NULL DEFAULT 0;
       
       `);
         console.log("Database Table Created Successfully!");
