@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { studentsService } from "./students.service.js";
- 
 
 const createStudent = async (req: Request, res: Response) => {
   try {
@@ -18,6 +17,24 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
+const getAllStudents = async (req: Request, res: Response) => {
+  try {
+    const studentsData = await studentsService.getStudents(req.body);
+
+    return res.status(200).json({
+      success: true,
+      message: "Get All Students Data ",
+      data: studentsData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const students_controller = {
   createStudent,
+  getAllStudents,
 };

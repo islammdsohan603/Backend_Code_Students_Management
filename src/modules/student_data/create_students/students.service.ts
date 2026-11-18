@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../../../db/db.js";
 import type { IStudents } from "./students.interface.js";
-
+// create students data
 const createStudentData = async (palyoad: IStudents) => {
   const { name, email, password, age, department, marks } = palyoad;
 
@@ -63,7 +63,26 @@ const createStudentData = async (palyoad: IStudents) => {
     throw error;
   }
 };
+// get all students data
+const getStudents = async (palyoad: IStudents) => {
+  const studentsData = await pool.query(`
+    
+    SELECT 
+    id,
+    name,
+    email,
+    age,
+    department,
+    marks
+    
+    FROM student_data
+    
+    `);
+
+  return studentsData.rows;
+};
 
 export const studentsService = {
   createStudentData,
+  getStudents,
 };

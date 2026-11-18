@@ -5,4 +5,6 @@ const router = Router();
 
 router.post("/", students_controller.createStudent);
 
+router.get("/", students_controller.getAllStudents);
+
 export const studentsRouter = router;
