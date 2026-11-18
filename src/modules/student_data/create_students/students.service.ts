@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { pool } from "../../db/db.js";
+import { pool } from "../../../db/db.js";
 import type { IStudents } from "./students.interface.js";
 
 const createStudentData = async (palyoad: IStudents) => {

@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import { studentsRouter } from "./modules/student_data/students.route.js";
+import { studentsRouter } from "./modules/student_data/create_students/students.route.js";
 
 const app = express();
 
