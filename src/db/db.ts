@@ -28,6 +28,18 @@ export const Database = async () => {
       
       `);
 
+    await pool.query(`
+        
+        ALTER TABLE student_data
+        ADD COLUMN IF NOT EXISTS bio TEXT,
+        ADD COLUMN IF NOT EXISTS address TEXT,
+        ADD COLUMN IF NOT EXISTS father_name VARCHAR(100),
+        ADD COLUMN IF NOT EXISTS mother_name VARCHAR(100),
+        ADD COLUMN IF NOT EXISTS parents_mobile_number VARCHAR(20); 
+
+
+        `);
+
     console.log("Database Table Created Successfully!");
   } catch (error) {
     console.error("Database Initialization Failed:", error);

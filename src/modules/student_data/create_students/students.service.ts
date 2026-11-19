@@ -109,8 +109,21 @@ const singleStudentsData = async (id: string) => {
 
 // Update Single Student Data
 
+// Update Single Student Data
 const updateStudentData = async (id: string, payload: IUpdateStudent) => {
-  const { name, email, password, age, department, marks } = payload;
+  const {
+    name,
+    email,
+    password,
+    age,
+    department,
+    marks,
+    bio,
+    address,
+    father_name,
+    mother_name,
+    parents_mobile_number,
+  } = payload;
 
   // Hash Password Only When Password Is Provided
   const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
@@ -118,6 +131,7 @@ const updateStudentData = async (id: string, payload: IUpdateStudent) => {
   const updatedData = await pool.query(
     `
       UPDATE student_data
+
       SET
         name = COALESCE($2, name),
         email = COALESCE($3, email),
@@ -125,8 +139,18 @@ const updateStudentData = async (id: string, payload: IUpdateStudent) => {
         age = COALESCE($5, age),
         department = COALESCE($6, department),
         marks = COALESCE($7, marks),
+
+        -- Optional Personal Information
+        bio = COALESCE($8, bio),
+        address = COALESCE($9, address),
+        father_name = COALESCE($10, father_name),
+        mother_name = COALESCE($11, mother_name),
+        parents_mobile_number = COALESCE($12, parents_mobile_number),
+
         updated_at = NOW()
+
       WHERE id = $1
+
       RETURNING
         id,
         name,
@@ -134,10 +158,28 @@ const updateStudentData = async (id: string, payload: IUpdateStudent) => {
         age,
         department,
         marks,
+        bio,
+        address,
+        father_name,
+        mother_name,
+        parents_mobile_number,
         created_at,
         updated_at
     `,
-    [id, name, email, hashedPassword, age, department, marks],
+    [
+      id,
+      name ?? null,
+      email ?? null,
+      hashedPassword,
+      age ?? null,
+      department ?? null,
+      marks ?? null,
+      bio ?? null,
+      address ?? null,
+      father_name ?? null,
+      mother_name ?? null,
+      parents_mobile_number ?? null,
+    ],
   );
 
   return updatedData.rows[0];
