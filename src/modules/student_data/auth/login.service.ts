@@ -1,25 +1,69 @@
+import bcrypt from "bcryptjs";
+import "dotenv/config";
+import jwt from "jsonwebtoken";
 import { pool } from "../../../db/db.js";
 
-const studentLogin_Service = async (palyload: {
+const jwtSecret = process.env.JWT_SECRET;
+
+if (!jwtSecret) {
+  throw new Error("JWT_SECRET is missing!");
+}
+
+const studentLogin_Service = async (payload: {
   email: string;
   password: string;
 }) => {
-  // check if the students exists
-  // check if the password match
+  const { email, password } = payload;
 
-  const { email, password } = palyload;
+  // Find Student By Email
   const students = await pool.query(
     `
-        SELECT * FROM student_data WHERE email=$1
-        `,
+      SELECT *
+      FROM student_data
+      WHERE email = $1
+    `,
     [email],
   );
 
-  if (students.rowCount === 0) {
-    throw new Error("Invalid Credentials!!");
+  const student = students.rows[0];
+
+  if (!student) {
+    return null;
   }
 
-  return students.rows[0];
+  // Check Password
+  const matchPassword = await bcrypt.compare(password, student.password);
+
+  if (!matchPassword) {
+    return null;
+  }
+
+  // JWT Payload
+  const jwtPayload = {
+    id: student.id,
+    name: student.name,
+    email: student.email,
+  };
+
+  // Generate JWT Token
+  const accessToken = jwt.sign(jwtPayload, jwtSecret, {
+    expiresIn: "10m",
+    algorithm: "HS256",
+  });
+
+  // Return Token and Student Data
+
+  return {
+    accessToken,
+    student: {
+      id: student.id,
+      name: student.name,
+      email: student.email,
+      age: student.age,
+      department: student.department,
+      marks: student.marks,
+    },
+  };
 };
 
 export const studentsLogin_Services = {
