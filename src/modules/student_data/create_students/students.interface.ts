@@ -8,7 +8,7 @@ export interface IStudents {
 }
 
 export interface IUpdateStudent {
-  full_name?: string;
+  name?: string;
   email?: string;
   password?: string;
   phone?: string;

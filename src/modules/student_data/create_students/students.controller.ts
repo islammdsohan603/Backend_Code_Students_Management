@@ -99,9 +99,39 @@ const updateStudentData = async (
   }
 };
 
+// deleted Students data
+const deletedStudentData = async (
+  req: Request<{ id: string }>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+
+    const studentData = await studentsService.deletedStudentData(id);
+
+    if (!studentData) {
+      return res.status(404).json({
+        success: false,
+        message: "Student Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Students Data Deleted Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const students_controller = {
   createStudent,
   getAllStudents,
   singleStudentsData,
   updateStudentData,
+  deletedStudentData,
 };

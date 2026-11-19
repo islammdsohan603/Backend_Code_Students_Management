@@ -11,4 +11,6 @@ router.get("/:id", students_controller.singleStudentsData);
 
 router.put("/:id", students_controller.updateStudentData);
 
+router.delete("/:id", students_controller.deletedStudentData);
+
 export const studentsRouter = router;

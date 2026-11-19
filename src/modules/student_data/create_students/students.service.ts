@@ -107,19 +107,13 @@ const singleStudentsData = async (id: string) => {
   return studentdData.rows[0];
 };
 
- 
- // Update Single Student Data
+// Update Single Student Data
 
-const updateStudentData = async (
-  id: string,
-  payload: IUpdateStudent
-) => {
+const updateStudentData = async (id: string, payload: IUpdateStudent) => {
   const { name, email, password, age, department, marks } = payload;
 
   // Hash Password Only When Password Is Provided
-  const hashedPassword = password
-    ? await bcrypt.hash(password, 12)
-    : null;
+  const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
 
   const updatedData = await pool.query(
     `
@@ -143,24 +137,31 @@ const updateStudentData = async (
         created_at,
         updated_at
     `,
-    [
-      id,
-      name,
-      email,
-      hashedPassword,
-      age,
-      department,
-      marks,
-    ]
+    [id, name, email, hashedPassword, age, department, marks],
   );
 
   return updatedData.rows[0];
 };
 
+// deleted students data
+
+const deletedStudentData = async (id: string) => {
+  const students_Delete = await pool.query(
+    `
+    DELETE FROM student_data
+    WHERE id=$1
+    RETURNING *
+    `,
+    [id],
+  );
+
+  return students_Delete.rows[0];
+};
 
 export const studentsService = {
   createStudentData,
   getStudents,
   singleStudentsData,
   updateStudentData,
+  deletedStudentData,
 };
