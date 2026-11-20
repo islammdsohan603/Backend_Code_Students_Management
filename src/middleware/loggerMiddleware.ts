@@ -3,8 +3,11 @@ import express, {
   type Request,
   type Response,
 } from "express";
-
+import jwt, { type JwtPayload } from "jsonwebtoken";
+import { pool } from "../db/db.js";
 const app = express();
+
+const jwtSecret = process.env.JWT_SECRET;
 
 // Custom Logger Middleware
 export const loggerMiddleware = (
@@ -12,14 +15,10 @@ export const loggerMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log("Method:", req.method);
-  console.log("URL:", req.originalUrl);
-  console.log("Time:", new Date().toISOString());
-
   next();
 };
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
   // Check if the token exist
 
   const token = req.headers.authorization;
@@ -31,6 +30,22 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  // console.log(req.headers.authorization);
+  const decode = jwt.verify(token, jwtSecret as string) as JwtPayload;
+
+  const student = await pool.query(
+    `
+    
+    SELECT * FROM student_data WHERE email=$1
+    `,
+    [decode.email],
+  );
+
+  if (student.rowCount === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found!",
+    });
+  }
+
   next();
 };
