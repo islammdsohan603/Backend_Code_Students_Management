@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { auth } from "../../../middleware/loggerMiddleware.js";
+
+import { auth } from "../../../middleware/auth.js";
 import { students_controller } from "./students.controller.js";
 
 const router = Router();
 
 router.post("/", students_controller.createStudent);
 
-router.get("/", auth, students_controller.getAllStudents);
+router.get("/", auth("admin", "student"), students_controller.getAllStudents);
 
 router.get("/:id", students_controller.singleStudentsData);
 
