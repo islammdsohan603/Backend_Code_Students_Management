@@ -20,6 +20,17 @@ export const loggerMiddleware = (
 };
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.headers);
+  // Check if the token exist
+
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "user not authorized !",
+    });
+  }
+
+  // console.log(req.headers.authorization);
   next();
 };
