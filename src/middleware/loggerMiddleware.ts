@@ -18,3 +18,8 @@ export const loggerMiddleware = (
 
   next();
 };
+
+export const auth = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.headers);
+  next();
+};

@@ -1,15 +1,15 @@
 import express, { type Request, type Response } from "express";
-import { loggerMiddleware } from "./loggerMiddleware.js";
+import { loggerMiddleware } from "./middleware/loggerMiddleware.js";
 import { students_login } from "./modules/student_data/auth/login.route.js";
 import { studentsRouter } from "./modules/student_data/create_students/students.route.js";
 
 const app = express();
+app.use(loggerMiddleware);
 
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(loggerMiddleware);
 
 app.get("/", (req: Request, res: Response, next) => {
   return res.status(200).json({
