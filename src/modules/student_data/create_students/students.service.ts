@@ -3,7 +3,7 @@ import { pool } from "../../../db/db.js";
 import type { IStudents, IUpdateStudent } from "./students.interface.js";
 // create students data
 const createStudentData = async (payload: IStudents) => {
-  const { name, email, password, age, department, marks } = payload;
+  const { name, email, password, age, department, marks, role } = payload;
 
   if (
     !name?.trim() ||
@@ -56,7 +56,7 @@ const createStudentData = async (payload: IStudents) => {
         role
 
         `,
-      [name, email, hashedPassword, age, department, marks, "student"],
+      [name, email, hashedPassword, age, department, marks, role],
     );
 
     return studentsData.rows[0];

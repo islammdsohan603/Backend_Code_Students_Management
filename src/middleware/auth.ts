@@ -2,13 +2,14 @@ import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { pool } from "../db/db.js";
 
+import { type role } from "../modules/student_data/create_students/students.interface.js";
+
 // User Roles
-export type UserRole = "admin" | "student";
 
 const jwtSecret = process.env.JWT_SECRET;
 
 // Custom Auth Middleware
-export const auth = (...roles: UserRole[]) => {
+export const auth = (...roles: role[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Check if the token exist
 
@@ -63,7 +64,7 @@ export const auth = (...roles: UserRole[]) => {
       });
     }
 
-    const currentStudent = student.rows[0] as { role: UserRole };
+    const currentStudent = student.rows[0] as { role: role };
 
     if (roles.length > 0 && !roles.includes(currentStudent.role)) {
       return res.status(403).json({

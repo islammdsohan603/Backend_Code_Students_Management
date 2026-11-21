@@ -1,4 +1,10 @@
-export type StudentRole = "admin" | "student";
+export type role = "admin" | "teacher" | "student";
+
+export const StudentRole = {
+  admin: "admin",
+  teacher: "teacher",
+  student: "student",
+} as const;
 
 export interface IStudents {
   name: string;
@@ -7,7 +13,7 @@ export interface IStudents {
   age: number;
   department: string;
   marks: number;
-  role?: StudentRole;
+  role?: role;
 }
 
 export interface IUpdateStudent {
