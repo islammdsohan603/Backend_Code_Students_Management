@@ -3,8 +3,12 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
 import { loggerMiddleware } from "./middleware/loggerMiddleware.js";
 import { students_login } from "./modules/student_data/auth/login.route.js";
 import { studentsRouter } from "./modules/student_data/create_students/students.route.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
+
+app.use(cookieParser())
+
 app.use(loggerMiddleware);
 
 app.use(express.json());
