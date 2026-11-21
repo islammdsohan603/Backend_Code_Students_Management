@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { sendResponse } from "../../../utils/sendResponse.js";
 import { studentsLogin_Services } from "./login.service.js";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -12,25 +13,25 @@ const refreshCookieOptions = {
 };
 
 // Login Controller
+
 const logInStudent = async (req: Request, res: Response) => {
   try {
     const result = await studentsLogin_Services.studentLogin_Service(req.body);
 
     if (!result) {
-      return res.status(401).json({
+      return sendResponse(res, {
+        statusCode: 401,
         success: false,
         message: "Invalid email or password",
       });
     }
 
-    // Set Refresh Token in HttpOnly Cookie
     res.cookie("refreshToken", result.refreshToken, refreshCookieOptions);
 
-    // Return Access Token Only
-    return res.status(200).json({
+    return sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Login successful",
-
       data: {
         accessToken: result.accessToken,
         student: result.student,
@@ -39,7 +40,8 @@ const logInStudent = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Login Error:", error);
 
-    return res.status(500).json({
+    return sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: "Internal Server Error",
     });
@@ -47,40 +49,43 @@ const logInStudent = async (req: Request, res: Response) => {
 };
 
 // Refresh Token Controller
+
 const refreshAccessToken = async (req: Request, res: Response) => {
   try {
-    // Get Refresh Token From Cookie
     const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
-      return res.status(401).json({
+      return sendResponse(res, {
+        statusCode: 401,
         success: false,
         message: "Refresh Token Not Found!",
       });
     }
 
-    // Generate New Access Token
     const result =
       await studentsLogin_Services.refreshAccessToken_Service(refreshToken);
 
     if (!result) {
       res.clearCookie("refreshToken", refreshCookieOptions);
 
-      return res.status(401).json({
+      return sendResponse(res, {
+        statusCode: 401,
         success: false,
         message: "Invalid or Expired Refresh Token! Please Login Again.",
       });
     }
 
-    return res.status(200).json({
+    return sendResponse(res, {
+      statusCode: 200,
       success: true,
-      message: "Access Token Refreshed Successfully!",
+      message: "Access Token Refreshed Successfully",
       data: result,
     });
   } catch (error) {
     console.error("Refresh Token Error:", error);
 
-    return res.status(500).json({
+    return sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: "Internal Server Error",
     });
@@ -88,10 +93,12 @@ const refreshAccessToken = async (req: Request, res: Response) => {
 };
 
 // Logout Controller
+
 const logOutStudent = (req: Request, res: Response) => {
   res.clearCookie("refreshToken", refreshCookieOptions);
 
-  return res.status(200).json({
+  return sendResponse(res, {
+    statusCode: 200,
     success: true,
     message: "Logout Successfully!",
   });
