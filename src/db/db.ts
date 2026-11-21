@@ -16,6 +16,9 @@ export const Database = async () => {
         age INT NOT NULL,
         department VARCHAR(100) NOT NULL,
         marks DECIMAL(5,2) NOT NULL,
+
+    
+
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
@@ -27,6 +30,11 @@ export const Database = async () => {
       ADD COLUMN IF NOT EXISTS marks DECIMAL(5,2) NOT NULL DEFAULT 0;
       
       `);
+
+    await pool.query(`
+  ALTER TABLE student_data
+  ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'student'
+`);
 
     await pool.query(`
         

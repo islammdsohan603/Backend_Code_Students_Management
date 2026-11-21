@@ -3,32 +3,57 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import { pool } from "../db/db.js";
 
 // User Roles
-type UserRole = "admin" | "student";
+export type UserRole = "admin" | "student";
 
 const jwtSecret = process.env.JWT_SECRET;
 
 // Custom Auth Middleware
-export const auth = (...roles: any) => {
+export const auth = (...roles: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Check if the token exist
 
-    const token = req.headers.authorization;
+    const authorization = req.headers.authorization;
 
-    if (!token) {
+    if (!authorization) {
       return res.status(401).json({
         success: false,
-        message: "user not authorized !",
+        message: "User not authorized!",
       });
     }
 
-    const decode = jwt.verify(token, jwtSecret as string) as JwtPayload;
+    const [scheme, token] = authorization.split(" ");
+
+    if (scheme !== "Bearer" || !token) {
+      return res.status(401).json({
+        success: false,
+        message: "Use a Bearer token!",
+      });
+    }
+
+    let decoded: JwtPayload;
+
+    try {
+      decoded = jwt.verify(token, jwtSecret as string) as JwtPayload;
+    } catch {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid or expired token!",
+      });
+    }
+
+    if (typeof decoded.email !== "string") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token payload!",
+      });
+    }
 
     const student = await pool.query(
       `
     
     SELECT * FROM student_data WHERE email=$1
     `,
-      [decode.email],
+      [decoded.email],
     );
 
     if (student.rowCount === 0) {
@@ -38,8 +63,19 @@ export const auth = (...roles: any) => {
       });
     }
 
-    req.currentStudent = decode;
+    const currentStudent = student.rows[0] as { role: UserRole };
 
+    if (roles.length > 0 && !roles.includes(currentStudent.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to access this resource!",
+      });
+    }
+
+    req.currentStudent = {
+      ...decoded,
+      role: currentStudent.role,
+    };
     next();
   };
 };

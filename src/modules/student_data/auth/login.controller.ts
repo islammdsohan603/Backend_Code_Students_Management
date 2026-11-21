@@ -5,9 +5,16 @@ const logInStudent = async (req: Request, res: Response) => {
   try {
     const result = await studentsLogin_Services.studentLogin_Service(req.body);
 
+    if (!result) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
     return res.status(200).json({
       success: true,
-      message: "Login Successfull",
+      message: "Login successful",
       data: result,
     });
   } catch (error) {

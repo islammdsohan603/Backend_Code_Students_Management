@@ -5,8 +5,6 @@ import express, {
 } from "express";
 const app = express();
 
-const jwtSecret = process.env.JWT_SECRET;
-
 // Custom Logger Middleware
 export const loggerMiddleware = (
   req: Request,

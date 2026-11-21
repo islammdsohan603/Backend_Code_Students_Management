@@ -43,6 +43,7 @@ const studentLogin_Service = async (payload: {
     id: student.id,
     name: student.name,
     email: student.email,
+    role: student.role,
   };
 
   // Generate JWT Token
@@ -62,6 +63,7 @@ const studentLogin_Service = async (payload: {
       age: student.age,
       department: student.department,
       marks: student.marks,
+      role: student.role,
     },
   };
 };

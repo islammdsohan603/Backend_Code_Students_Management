@@ -9,10 +9,10 @@ router.post("/", students_controller.createStudent);
 
 router.get("/", auth("admin", "student"), students_controller.getAllStudents);
 
-router.get("/:id", students_controller.singleStudentsData);
+router.get("/:id", auth("admin", "student"), students_controller.singleStudentsData);
 
-router.put("/:id", students_controller.updateStudentData);
+router.put("/:id", auth("admin"), students_controller.updateStudentData);
 
-router.delete("/:id", students_controller.deletedStudentData);
+router.delete("/:id", auth("admin"), students_controller.deletedStudentData);
 
 export const studentsRouter = router;

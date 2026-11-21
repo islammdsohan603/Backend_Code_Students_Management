@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import { pool } from "../../../db/db.js";
 import type { IStudents, IUpdateStudent } from "./students.interface.js";
 // create students data
-const createStudentData = async (palyoad: IStudents) => {
-  const { name, email, password, age, department, marks } = palyoad;
+const createStudentData = async (payload: IStudents) => {
+  const { name, email, password, age, department, marks } = payload;
 
   if (
     !name?.trim() ||
@@ -28,7 +28,7 @@ const createStudentData = async (palyoad: IStudents) => {
     throw new Error("This Email is Already Registered");
   }
 
-  const hasedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash(password, 12);
 
   try {
     const studentsData = await pool.query(
@@ -41,30 +41,32 @@ const createStudentData = async (palyoad: IStudents) => {
         password,
         age,
         department,
-        marks
+        marks,
+        role
 
        )
-        VALUES ($1,$2,$3,$4,$5,$6)
+        VALUES ($1,$2,$3,$4,$5,$6,$7)
 
         RETURNING 
         name,
         email,
         age,
         department,
-        marks
+        marks,
+        role
 
         `,
-      [name, email, hasedPassword, age, department, marks],
+      [name, email, hashedPassword, age, department, marks, "student"],
     );
 
     return studentsData.rows[0];
   } catch (error) {
-    console.error("Students Service data Error");
+    console.error("Create Student Database Error:", error);
     throw error;
   }
 };
 // get all students data
-const getStudents = async (palyoad: IStudents) => {
+const getStudents = async () => {
   const studentsData = await pool.query(`
     
     SELECT 
@@ -73,7 +75,8 @@ const getStudents = async (palyoad: IStudents) => {
     email,
     age,
     department,
-    marks
+    marks,
+    role
     
     FROM student_data
     
@@ -85,7 +88,7 @@ const getStudents = async (palyoad: IStudents) => {
 // get single students data
 
 const singleStudentsData = async (id: string) => {
-  const studentdData = await pool.query(
+  const studentData = await pool.query(
     `
     
     SELECT 
@@ -104,10 +107,8 @@ const singleStudentsData = async (id: string) => {
     [id],
   );
 
-  return studentdData.rows[0];
+  return studentData.rows[0];
 };
-
-// Update Single Student Data
 
 // Update Single Student Data
 const updateStudentData = async (id: string, payload: IUpdateStudent) => {
@@ -188,7 +189,7 @@ const updateStudentData = async (id: string, payload: IUpdateStudent) => {
 // deleted students data
 
 const deletedStudentData = async (id: string) => {
-  const students_Delete = await pool.query(
+  const deletedStudent = await pool.query(
     `
     DELETE FROM student_data
     WHERE id=$1
@@ -197,7 +198,7 @@ const deletedStudentData = async (id: string) => {
     [id],
   );
 
-  return students_Delete.rows[0];
+  return deletedStudent.rows[0];
 };
 
 export const studentsService = {

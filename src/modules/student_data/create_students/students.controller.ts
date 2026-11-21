@@ -11,6 +11,22 @@ const createStudent = async (req: Request, res: Response) => {
       data: students_Data,
     });
   } catch (error) {
+    console.error("Create Student Error:", error);
+
+    if (error instanceof Error && error.message === "This Email is Already Registered") {
+      return res.status(409).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    if (error instanceof Error && error.message === "All Student Data Is Required") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -20,7 +36,7 @@ const createStudent = async (req: Request, res: Response) => {
 
 const getAllStudents = async (req: Request, res: Response) => {
   try {
-    const studentsData = await studentsService.getStudents(req.body);
+    const studentsData = await studentsService.getStudents();
 
     return res.status(200).json({
       success: true,

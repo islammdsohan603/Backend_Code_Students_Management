@@ -1,3 +1,5 @@
+export type StudentRole = "admin" | "student";
+
 export interface IStudents {
   name: string;
   email: string;
@@ -5,6 +7,7 @@ export interface IStudents {
   age: number;
   department: string;
   marks: number;
+  role?: StudentRole;
 }
 
 export interface IUpdateStudent {
